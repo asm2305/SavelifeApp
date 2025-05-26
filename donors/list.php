@@ -1,33 +1,3 @@
-<?php
-include '../includes/connect.php';
-include '../includes/header.php';
-
-$blood_type = isset($_GET['blood_type']) ? $_GET['blood_type'] : '';
-$location = isset($_GET['location']) ? $_GET['location'] : '';
-
-$sql = "SELECT * FROM donors WHERE 1=1";
-$params = [];
-$types = '';
-
-if (!empty($blood_type)) {
-    $sql .= " AND blood_type = ?";
-    $params[] = $blood_type;
-    $types .= 's';
-}
-if (!empty($location)) {
-    $sql .= " AND location LIKE ?";
-    $params[] = "%$location%";
-    $types .= 's';
-}
-$sql .= " ORDER BY registration_date DESC";
-
-$stmt = $conn->prepare($sql);
-if (!empty($params)) {
-    $stmt->bind_param($types, ...$params);
-}
-$stmt->execute();
-$result = $stmt->get_result();
-?>
 
 
 <!-- Hero Section -->
