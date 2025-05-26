@@ -75,6 +75,7 @@ style="background-image: linear-gradient(rgba(30, 61, 97, 0.8), rgba(30, 61, 97,
         </div>
     </div>
     
+
     <!-- View details of the selected center -->
     <?php if (!empty($selected_center)): ?>
         <div class="row mt-4">
