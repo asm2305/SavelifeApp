@@ -22,6 +22,7 @@ if (isset($_GET['center_id'])) {
 }
 ?>
 
+
 <!-- Hero Section -->
 <div class="hero-section text-center py-5 text-white mb-5" 
 style="background-image: linear-gradient(rgba(30, 61, 97, 0.8), rgba(30, 61, 97, 0.8)), url('/SAVELIFEnew/s.jpeg'); background-size: cover; background-position: center;">
@@ -74,7 +75,7 @@ style="background-image: linear-gradient(rgba(30, 61, 97, 0.8), rgba(30, 61, 97,
 </div>
         </div>
     </div>
-    
+   
 
     <!-- View details of the selected center -->
     <?php if (!empty($selected_center)): ?>
