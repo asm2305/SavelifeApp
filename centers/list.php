@@ -1,4 +1,39 @@
+<?php
+include '../includes/connect.php';
+include '../includes/header.php';
 
+// Get search parameters
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$needs_blood = isset($_GET['needs_blood']) ? 1 : 0;
+
+// Build query
+$sql = "SELECT * FROM donation_centers WHERE 1=1";
+$params = [];
+$types = '';
+
+if (!empty($search)) {
+    $sql .= " AND (center_name LIKE ? OR location LIKE ?)";
+    $params[] = "%$search%";
+    $params[] = "%$search%";
+    $types .= 'ss';
+}
+
+if ($needs_blood) {
+    $sql .= " AND needs_blood = 1";
+}
+
+$sql .= " ORDER BY center_name ASC";
+
+// Prepare and execute
+$stmt = $conn->prepare($sql);
+
+if (!empty($params)) {
+    $stmt->bind_param($types, ...$params);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+?>
 
 <div class="container">
     <h1 class="text-center my-4">مراكز التبرع </h1>
