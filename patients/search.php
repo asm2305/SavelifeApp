@@ -6,7 +6,19 @@ include '../includes/header.php';
 <?php
 $bloodType = isset($_GET['blood_type']) ? $_GET['blood_type'] : '';
 $location = isset($_GET['location']) ? $_GET['location'] : '';
-$urgency = isset($_GET['urgency']) ? $_GET['urgency'] : '';
+$urgencyLevel = isset($_GET['urgency_level']) ? $_GET['urgency_level'] : '';
+
+// Map database urgency levels to Arabic for display
+$urgencyLevelsArabic = [
+    'حرج' => 'Critical',
+    'عالي' => 'High',
+    'متوسط' => 'Medium',
+    'منخفض' => 'Low'
+];
+
+// Convert Arabic selection back to database values
+$urgencyLevelDB = $urgencyLevel;
+
 
 $sql = "SELECT * FROM patients WHERE 1=1";
 $params = [];
@@ -19,17 +31,17 @@ if (!empty($location)) {
     $sql .= " AND location LIKE ?";
     $params[] = "%$location%";
 }
-if (!empty($urgency)) {
+if (!empty($urgencyLevelDB)) {
     $sql .= " AND urgency_level = ?";
-    $params[] = $urgency;
+    $params[] = $urgencyLevelDB;
 }
 
 $sql .= " ORDER BY 
           CASE urgency_level
-            WHEN 'Urgent' THEN 1
-            WHEN 'High' THEN 2
-            WHEN 'Medium' THEN 3
-            WHEN 'Low' THEN 4
+            WHEN 'حرج' THEN 1
+            WHEN 'عالي' THEN 2
+            WHEN 'متوسط' THEN 3
+            WHEN 'منخفض' THEN 4
             ELSE 5
           END, registration_date DESC";
 
@@ -46,8 +58,8 @@ $result = $stmt->get_result();
 <div class="hero-section text-center py-5 text-white mb-5" 
 style="background-image: linear-gradient(rgba(30, 61, 97, 0.8), rgba(30, 61, 97, 0.8)), url('/SAVELIFEnew/s.jpeg'); background-size: cover; background-position: center;">
     <div class="container">
-        <h1 class="display-4">البحث عن المتبرعين بالدم</h1>
-        <p class="lead">ابحث عن متبرعين بالدم مناسبين لاحتياجاتك الطبية</p>
+        <h1 class="display-4">البحث عن المرضى المحتاجين للدم</h1>
+        <p class="lead">ابحث عن المرضى المحتاجين لتبرعات دم</p>
     </div>
 </div>
 
@@ -57,13 +69,13 @@ style="background-image: linear-gradient(rgba(30, 61, 97, 0.8), rgba(30, 61, 97,
             <h5 class="mb-0">تصفية البحث</h5>
         </div>
         <div class="card-body">
-            <form method="GET" action="search.php">
+            <form method="GET" action="search_patients.php">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="blood_type">نوع فصيلة الدم المطلوبة</label>
                             <select class="form-control" id="blood_type" name="blood_type">
-                                <option value="">فصيلة الدم</option>
+                                <option value="">جميع الفصائل</option>
                                 <?php
                                 $bloodTypes = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
                                 foreach ($bloodTypes as $type) {
@@ -83,14 +95,14 @@ style="background-image: linear-gradient(rgba(30, 61, 97, 0.8), rgba(30, 61, 97,
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="urgency">مستوى الخطورة</label>
-                            <select class="form-control" id="urgency" name="urgency">
-                                <option value="">الخطورة</option>
+                            <label for="urgency_level">مستوى الاستعجال</label>
+                            <select class="form-control" id="urgency_level" name="urgency_level">
+                                <option value="">جميع المستويات</option>
                                 <?php
-                                $urgencies = ['خطير', 'مرتفع', 'متوسط', 'منخفض'];
-                                foreach ($urgencies as $level) {
-                                    $selected = $urgency == $level ? 'selected' : '';
-                                    echo "<option value='$level' $selected>$level</option>";
+                                $statusesArabic = ['حرج', 'عالي', 'متوسط', 'منخفض'];
+                                foreach ($statusesArabic as $status) {
+                                    $selected = $urgencyLevel == $status ? 'selected' : '';
+                                    echo "<option value='$status' $selected>$status</option>";
                                 }
                                 ?>
                             </select>
@@ -99,7 +111,7 @@ style="background-image: linear-gradient(rgba(30, 61, 97, 0.8), rgba(30, 61, 97,
                 </div>
                 <div class="text-center mt-3">
                     <button type="submit" class="btn text-white" style="background-color: #59B234;">بحث</button>
-                    <a href="search.php" class="btn btn-secondary">إلغاء البحث</a>
+                    <a href="search_patients.php" class="btn btn-secondary">إلغاء البحث</a>
                 </div>
             </form>
         </div>
@@ -115,32 +127,34 @@ style="background-image: linear-gradient(rgba(30, 61, 97, 0.8), rgba(30, 61, 97,
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>اسم المريض</th>
-                                <th>فصيلة الدم</th>
-                                <th>الخطورة</th>
-                                <th>المستشفى</th>
-                                <th>المنطقة</th>
-                                <th>التواصل</th>
-                                <th>التاريخ</th>
+                                
+                                <th>فصيلة الدم المطلوبة</th>
+                                <th>مستوى الاستعجال</th>
+                                <th>اسم المستشفى</th>
+                                <th>الموقع</th>
+                                <th>رقم التواصل</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
                             <?php while ($patient = $result->fetch_assoc()): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($patient['full_name']) ?></td>
-                                    <td><span class="badge" style="background-color: #59B234; color: white;"><?= htmlspecialchars($patient['needed_blood_type']) ?></span></td>
+                                    
+                                    <td><span class="badge" style="background-color: #D9534F; color: white;"><?= htmlspecialchars($patient['needed_blood_type']) ?></span></td>
                                     <td>
                                         <?php 
-                                        $urgencyClass = '';
-                                        if ($patient['urgency_level'] == 'Urgent') $urgencyClass = 'text-danger';
-                                        elseif ($patient['urgency_level'] == 'High') $urgencyClass = 'text-warning';
+                                        $statusClass = '';
+                                        if ($patient['urgency_level'] == 'حرج') $statusClass = 'text-danger';
+                                        elseif ($patient['urgency_level'] == 'عالي') $statusClass = 'text-warning';
+                                        elseif ($patient['urgency_level'] == 'متوسط') $statusClass = 'text-primary';
+                                        elseif ($patient['urgency_level'] == 'منخفض') $statusClass = 'text-success';
                                         ?>
-                                        <span class="<?= $urgencyClass ?>"><?= htmlspecialchars($patient['urgency_level']) ?></span>
+                                        <span class="<?= $statusClass ?>"><?= htmlspecialchars($patient['urgency_level']) ?></span>
                                     </td>
-                                    <td><?= htmlspecialchars($patient['hospital_name'] ?? 'غير متوفر') ?></td>
-                                    <td><?= htmlspecialchars($patient['location']) ?></td>
+                                    <td><?= htmlspecialchars($patient['hospital_name'] ?? 'غير محدد') ?></td>
+                                    <td><?= htmlspecialchars($patient['location'] ?? 'غير محدد') ?></td>
                                     <td><?= htmlspecialchars($patient['contact_number']) ?></td>
-                                    <td><?= date('M d, Y', strtotime($patient['registration_date'])) ?></td>
+                                   
                                 </tr>
                             <?php endwhile; ?>
                         </tbody>
