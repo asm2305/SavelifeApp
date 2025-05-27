@@ -1,25 +1,4 @@
-<?php 
-include '../includes/connect.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Data collection and refinement
-    $fullName = sanitize_input($_POST["fullName"], $conn);
-    $bloodType = sanitize_input($_POST["bloodType"], $conn);
-    $location = sanitize_input($_POST["location"], $conn);
-    $contactNumber = sanitize_input($_POST["contactNumber"], $conn);
-    $email = isset($_POST["email"]) ? sanitize_input($_POST["email"], $conn) : null;
-    $lastDonation = isset($_POST["lastDonation"]) ? sanitize_input($_POST["lastDonation"], $conn) : null;
-    $terms = isset($_POST["terms"]) ? 1 : 0;
-    
-    // Check required fields
-    if (empty($fullName) || empty($bloodType) || empty($location) || empty($contactNumber) || !$terms) {
-        echo json_encode(['success' => false, 'message' => 'يجب ملء جميع الحقول المطلوبة']);
-        exit;
-    }
-    
-    // Verify phone number
-    if (!preg_match('/^[0-9]{10,15}$/', $contactNumber)) {
-    echo "
     <!DOCTYPE html>
     <html lang='ar'>
     <head>
@@ -122,26 +101,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
     
-    $stmt->close();
-    $conn->close();
-}
 
-function notifyCentersForDonor($bloodType, $location, $conn) {
-    // Find centers that need this type of blood in the same area
-    $sql = "SELECT center_id, center_name, contact_number FROM donation_centers 
-            WHERE needs_blood = 1 
-            AND (blood_types_needed LIKE '%$bloodType%' OR blood_types_needed IS NULL)
-            AND location LIKE '%$location%'";
-    
-    $result = $conn->query($sql);
-    
-    if ($result->num_rows > 0) {
-        // In the real app, you'll send actual notifications here.
-        while($row = $result->fetch_assoc()) {
-            //Register notification (in the actual app, you can send SMS or email)
-            $logMessage = "تم إخطار المركز {$row['center_name']} حول المتبرع الجديد الذي لديه فصيلة دم $bloodType في $location";
-            file_put_contents('../notification_log.txt', $logMessage . PHP_EOL, FILE_APPEND);
-        }
-    }
-}
-?>
+
