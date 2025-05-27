@@ -46,7 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -60,6 +59,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             direction: rtl;
             text-align: right;
         }
+
+      
+        .navbar {
+            background-color: #1E3D61 !important;
+        }
+
         .hero-section {
             background-image: linear-gradient(rgba(30, 61, 97, 0.8), rgba(30, 61, 97, 0.8)), url('/SAVELIFEnew/s.jpeg');
             background-size: cover;
@@ -114,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="alert alert-danger"><?= $error_message ?></div>
             <?php endif; ?>
 
-            <!-- نموذج تسجيل الدخول -->
+            
             <form action="login.php" method="POST">
                 <div class="mb-3">
                     <label for="full_name" class="form-label">الاسم الكامل</label>
