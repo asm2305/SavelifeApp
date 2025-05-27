@@ -33,7 +33,7 @@ $result_centers = $conn->query($sql_centers);
     <div class="row">
         <div class="col-md-4">
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
+                               <div class="card-header bg-darkblue text-white">
                     <h5 class="mb-0">صفحة المتبرع </h5>
                 </div>
                 <div class="card-body">
@@ -59,7 +59,8 @@ $result_centers = $conn->query($sql_centers);
         <!-- Nearby Donation Centers -->
         <div class="col-md-8">
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
+                               <div class="card-header bg-darkblue text-white">
+
                     <h5 class="mb-0">مراكز التبرع القريبة</h5>
                 </div>
                 <div class="card-body">
@@ -84,7 +85,7 @@ $result_centers = $conn->query($sql_centers);
             
             <!-- Blood requests compatible with the donor's blood type -->
             <div class="card">
-                <div class="card-header bg-primary text-white">
+                              <div class="card-header bg-darkblue text-white">
                     <h5 class="mb-0">طلبات الدم الأخيرة التي تطابق فصيلتك</h5>
                 </div>
                 <div class="card-body">
