@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="ar">
 <head>
@@ -91,6 +92,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             background-color: #1E3D61;
             color: white;
             width: 100%;
+        }
+
+       
+        .navbar {
+            background-color: #1E3D61 !important;
         }
     </style>
 </head>
@@ -137,4 +143,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
