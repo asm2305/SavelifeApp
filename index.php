@@ -103,7 +103,7 @@
                 <div class="card-body">
                     <?php
                     include 'includes/connect.php';
-                    $sql = "SELECT full_name, blood_type, location FROM donors ORDER BY registration_date DESC LIMIT 5";
+                    $sql = "SELECT blood_type, location FROM donors ORDER BY registration_date DESC LIMIT 5";
                     $result = $conn->query($sql);
                     
                     if ($result->num_rows > 0): ?>
@@ -112,7 +112,7 @@
                                 <div class="list-group-item">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <strong><?= htmlspecialchars($row['full_name']) ?></strong>
+                                            
                                             <small class="d-block text-muted"><?= htmlspecialchars($row['location']) ?></small>
                                         </div>
                                         <span class="badge" style="background-color: #1E3D61; color: white;"><?= htmlspecialchars($row['blood_type']) ?></span>
